@@ -9,7 +9,7 @@ from transformers import pipeline
 # Load models
 
 
-# Initialize translation pipeline (English to Chinese) 
+# Initialize translation pipeline (English to Chinese)
 translation_pipeline = pipeline("translation_en_to_zh", model="Helsinki-NLP/opus-mt-en-zh")
 
 
