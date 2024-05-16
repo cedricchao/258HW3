@@ -7,10 +7,17 @@ import torch
 from transformers import pipeline
 
 # Load models
-translation_pipeline = pipeline("translation_en_to_hi", model="Helsinki-NLP/opus-mt-en-zh")
-summarization_pipeline = pipeline("summarization", model="facebook/bart-large-cnn")
-qa_pipeline = pipeline('question-answering', model='deepset/roberta-base-squad2')
 
+
+# Initialize translation pipeline (English to Chinese) 
+translation_pipeline = pipeline("translation_en_to_zh", model="Helsinki-NLP/opus-mt-en-zh")
+
+
+# Initialize summarization pipeline with a different model
+summarization_pipeline = pipeline("summarization", model="t5-base")
+
+# Initialize question-answering pipeline with a different model
+qa_pipeline = pipeline('question-answering', model='distilbert-base-uncased-distilled-squad')
 # def perform_translation(text, target_language="de"):
 #     return translation_pipeline(text, tgt_lang=target_language)[0]['translation_text']
 
