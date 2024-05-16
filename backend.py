@@ -33,7 +33,7 @@ CORS(app)  # This will enable CORS for all routes and methods
 
 # Configurations
 app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'wav', 'mp3'}
+app.config['ALLOWED_EXTENSIONS'] = {'wav'}
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 
 # Ensure upload folder exists
@@ -89,11 +89,37 @@ def answer_question():
     answer = qa_pipeline(question=question, context=context)
     return jsonify({'result': answer['answer']})
 
+# @app.route('/summarize', methods=['POST'])
+# def summarize_text():
+#     data = request.get_json()
+#     text = data.get('text')
+#     summary = perform_summarization(text)
+#     return jsonify({'result': summary})
+
+
+# @app.route('/summarize', methods=['POST'])
+# def summarize():
+#     data = request.get_json()
+#     text = data.get('text', '')
+#     if not text:
+#         return jsonify({'error': 'No text provided'}), 400
+#     summary = summarization_pipeline(text, max_length=150, min_length=30, do_sample=False)
+#     return jsonify({'summary': summary[0]['summary_text']})
+
+# Function to perform summarization
+def perform_summarization_text(text):
+    summary = summarization_pipeline(text, max_length=48, min_length=30, do_sample=False)
+    return summary[0]['summary_text']
+
 @app.route('/summarize', methods=['POST'])
 def summarize_text():
     data = request.get_json()
     text = data.get('text')
-    summary = perform_summarization(text)
+    if not text:
+        return jsonify({'error': 'No text provided'}), 400
+
+    summary = perform_summarization_text(text)
+
     return jsonify({'result': summary})
 
 
