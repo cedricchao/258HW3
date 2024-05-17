@@ -125,7 +125,7 @@ def perform_summarization_text(text):
 def summarize_text():
     data = request.get_json()
     text = data['text']
-    summary = summarization_pipeline(text, max_length=150, min_length=40, do_sample=False)
+    summary = perform_summarization_text(text)
     return jsonify({"summary": summary[0]['summary_text']})
 
 
