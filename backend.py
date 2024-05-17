@@ -111,16 +111,22 @@ def perform_summarization_text(text):
     summary = summarization_pipeline(text, max_length=48, min_length=30, do_sample=False)
     return summary[0]['summary_text']
 
-@app.route('/summarize', methods=['POST'])
+# @app.route('/summarize', methods=['POST'])
+# def summarize_text():
+#     data = request.get_json()
+#     text = data.get('text')
+#     if not text:
+#         return jsonify({'error': 'No text provided'}), 400
+#
+#     summary = perform_summarization_text(text)
+#
+#     return jsonify({'result': summary})
+@app.route('/summarize_text', methods=['POST'])
 def summarize_text():
     data = request.get_json()
-    text = data.get('text')
-    if not text:
-        return jsonify({'error': 'No text provided'}), 400
-
-    summary = perform_summarization_text(text)
-
-    return jsonify({'result': summary})
+    text = data['text']
+    summary = summarization_pipeline(text, max_length=150, min_length=40, do_sample=False)
+    return jsonify({"summary": summary[0]['summary_text']})
 
 
 if __name__ == '__main__':
