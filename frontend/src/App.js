@@ -75,9 +75,10 @@ function App() {
     setTask('summarize');
     try {
       const response = await axios.post("http://127.0.0.1:5000/summarize", { text: inputText });
-      // setResult(response.data.result.toLowerCase());
-      console.log(response.data); // Debug: log the response
-      setSummary(response.data.summary);
+      // setResult(response.data.result);
+      // console.log(response.data); // Debug: log the response
+      setSummary(response.data.result);
+
       setError('');
 
     } catch (err) {
@@ -91,8 +92,8 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>Deep Learning</h1>
-        <h1>NLP sequence tasks (translation, summarization, QA) </h1>
+        <h1>Text Summarization of CNN News</h1>
+        <h1>Summarization, Translation, QA </h1>
       </header>
       <main>
         {/*summary try*/}

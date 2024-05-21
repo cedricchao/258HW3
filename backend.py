@@ -5,6 +5,9 @@ import os
 from DeepDataMiningLearning.hfaudio.inference import MyAudioInference
 import torch
 from transformers import pipeline
+from transformers import AutoTokenizer
+from transformers import pipeline
+from transformers import AutoModelForSeq2SeqLM
 
 # Load models
 
@@ -22,7 +25,15 @@ qa_pipeline = pipeline('question-answering', model='distilbert-base-uncased-dist
 #     return translation_pipeline(text, tgt_lang=target_language)[0]['translation_text']
 
 def perform_summarization(text):
-    return summarization_pipeline(text)[0]['summary_text']
+    tokenizer = AutoTokenizer.from_pretrained("./models/t5")
+    model = AutoModelForSeq2SeqLM.from_pretrained("./models/t5")
+
+    # Load the trained model
+    summarizer = pipeline("summarization", model=model, tokenizer=tokenizer, framework="pt")
+    summary = summarizer(text, max_length=150, min_length=50, do_sample=False)
+    return summary[0]['summary_text']
+    # return summarization_pipeline(text)[0]['summary_text']
+
 
 # def perform_question_answering(question, context):
 #     return qa_pipeline(question=question, context=context)['answer']
@@ -104,12 +115,31 @@ def answer_question():
 #     if not text:
 #         return jsonify({'error': 'No text provided'}), 400
 #     summary = summarization_pipeline(text, max_length=150, min_length=30, do_sample=False)
-#     return jsonify({'summary': summary[0]['summary_text']})
+#     #
+#     # tokenizer = AutoTokenizer.from_pretrained("./models/t5")
+#     # model = AutoModelForSeq2SeqLM.from_pretrained("./models/t5")
+#     #
+#     # # Load the trained model
+#     # summarizer = pipeline("summarization", model=model, tokenizer=tokenizer, framework="pt")
+#     # summary = summarizer(text, max_length=150, min_length=50, do_sample=False)
+
+    # return jsonify({'summary': summary[0]['summary_text']})
 
 # Function to perform summarization
 def perform_summarization_text(text):
-    summary = summarization_pipeline(text, max_length=48, min_length=30, do_sample=False)
-    return summary[0]['summary_text']
+    #  Load the tokenizer and model
+    tokenizer = AutoTokenizer.from_pretrained("./models/t5")
+    model = AutoModelForSeq2SeqLM.from_pretrained("./models/t5")
+
+    # Load the trained model
+    summarizer = pipeline("summarization", model=model, tokenizer=tokenizer, framework="pt")
+    summary = summarizer(text, max_length=150, min_length=50, do_sample=False)
+
+    return summary
+    # summary = summarization_pipeline(text, max_length=48, min_length=30, do_sample=False)
+    # return summary[0]['summary_text']
+
+
 
 # @app.route('/summarize', methods=['POST'])
 # def summarize_text():
@@ -121,12 +151,12 @@ def perform_summarization_text(text):
 #     summary = perform_summarization_text(text)
 #
 #     return jsonify({'result': summary})
-@app.route('/summarize_text', methods=['POST'])
+@app.route('/summarize', methods=['POST'])
 def summarize_text():
     data = request.get_json()
     text = data['text']
-    summary = perform_summarization_text(text)
-    return jsonify({"summary": summary[0]['summary_text']})
+    summary = perform_summarization(text)
+    return jsonify({"result": summary})
 
 
 if __name__ == '__main__':
